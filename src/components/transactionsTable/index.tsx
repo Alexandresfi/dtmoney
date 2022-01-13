@@ -1,15 +1,11 @@
-import { useEffect } from "react";
-import { api } from "../../Services/api";
+import { useTransactions } from "../../hooks/useTransactions";
 import { Container } from "./styles";
 
-export function TransactionsTable(){
+export function TransactionsTable() {
 
-    useEffect(()=>{
-        api('/transactions')
-        .then(response=>console.log(response.data))
-    }, [])
+    const {transactions} = useTransactions()
 
-    return(
+    return (
         <Container>
             <table>
                 <thead>
@@ -22,26 +18,25 @@ export function TransactionsTable(){
                 </thead>
 
                 <tbody>
-                    <tr>
-                        <td>Desenvolvimento de web site</td>
-                        <td>R$ 1.500,00</td>
-                        <td>Desenvolvimento</td>
-                        <td>20/08/2021</td>
-                    </tr>
 
-                    <tr>
-                        <td>Desenvolvimento de web site</td>
-                        <td>R$ 1.500,00</td>
-                        <td>Desenvolvimento</td>
-                        <td>20/08/2021</td>
-                    </tr>
+                    {transactions.map(transaction => (
+                        <tr key={transaction.id}>
+                            <td> {transaction.title} </td>
+                            <td>
+                                {new Intl.NumberFormat('pt-BR', {
+                                    style: 'currency',
+                                    currency: 'BRL'
+                                }).format(transaction.amount)}
+                            </td>
+                            <td> {transaction.category} </td>
+                            <td> 
+                                {new Intl.DateTimeFormat('pt-BR').format(
+                                    new Date(transaction.createdAt)
+                                )}
+                                </td>
+                        </tr>
+                    ))}
 
-                    <tr>
-                        <td>Desenvolvimento de web site</td>
-                        <td>R$ 1.500,00</td>
-                        <td>Desenvolvimento</td>
-                        <td>20/08/2021</td>
-                    </tr>
                 </tbody>
             </table>
         </Container>
